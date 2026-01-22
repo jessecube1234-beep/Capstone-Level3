@@ -1,7 +1,8 @@
-import { Link } from 'react-router-dom'
 import { useState } from 'react'
 import { useJobs } from '../../hooks/useJobs'
 import { filterJobs } from '../../lib/utils'
+import JobCard from '../ui/JobCard.jsx'
+
 
 export default function JobsListPage() {
   console.log('JobsListPage rendered')
@@ -31,34 +32,22 @@ export default function JobsListPage() {
 
   // Loading state
   if (loading) {
-    return (
-      <div style={{ color: 'white' }}>
-        <p>Loading jobs...</p>
-      </div>
-    )
+    return <p>Loading jobs...</p>
   }
 
   // Error state
   if (error) {
-    return (
-      <div style={{ color: 'white' }}>
-        <p role="alert">Error loading jobs: {error}</p>
-      </div>
-    )
+    return <p role="alert">Error loading jobs: {error}</p>
   }
 
   // Empty state
   if (!jobs || jobs.length === 0) {
-    return (
-      <div style={{ color: 'white' }}>
-        <p>No job listings available.</p>
-      </div>
-    )
+    return <p>No job listings available.</p>
   }
 
   // Main render
   return (
-    <div style={{ color: 'white' }}>
+    <div>
       {filters.length > 0 && (
         <div>
           {filters.map(tag => (
@@ -71,42 +60,13 @@ export default function JobsListPage() {
       )}
 
       <ul>
-        {visibleJobs.map(job => {
-          const tags = [
-            job.role,
-            job.level,
-            ...(job.languages ?? []),
-            ...(job.tools ?? []),
-          ]
-
-          return (
-            <li key={job.id}>
-              <h3>
-                <Link to={`/jobs/${job.id}`}>
-                  {job.position}
-                </Link>
-              </h3>
-              <p>{job.company}</p>
-              <p>
-                {job.role} • {job.level}
-              </p>
-              <p>
-                {job.posted_at} • {job.contract} • {job.location}
-              </p>
-
-              <div>
-                {tags.map(tag => (
-                  <button
-                    key={tag}
-                    onClick={() => addFilter(tag)}
-                  >
-                    {tag}
-                  </button>
-                ))}
-              </div>
-            </li>
-          )
-        })}
+        {visibleJobs.map(job => (
+          <JobCard
+            key={job.id}
+            job={job}
+            onTagClick={addFilter}
+          />
+        ))}
       </ul>
     </div>
   )

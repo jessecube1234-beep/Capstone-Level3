@@ -1,4 +1,4 @@
-export const theme = {
+const theme = {
   colors: {
     primary: 'hsl(180, 29%, 50%)',
     background: 'hsl(180, 52%, 96%)',
@@ -16,3 +16,5 @@ export const theme = {
     md: '8px',
   },
 };
+
+export default theme;
