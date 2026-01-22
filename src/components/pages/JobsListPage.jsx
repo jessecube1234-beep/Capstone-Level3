@@ -1,26 +1,29 @@
 import { useState } from 'react'
-import { useJobs } from '../hooks/useJobs'
+import { useJobs } from '../../hooks/useJobs'
+import { filterJobs } from '../../lib/utils'
 
 export default function JobsListPage() {
-  // Fetch jobs from Supabase via custom hook
+  console.log('JobsListPage rendered')
+
+  // Fetch jobs from Supabase
   const { jobs, loading, error } = useJobs()
+
   // Store currently selected filter tags
   const [filters, setFilters] = useState([])
 
-  // Add a filter when a tag is clicked
-  // Prevents duplicates
+  // Derived data (pure function)
+  const visibleJobs = filterJobs(jobs, filters)
+
   function addFilter(tag) {
     setFilters(prev =>
       prev.includes(tag) ? prev : [...prev, tag]
     )
   }
 
-  // Remove a single filter tag
   function removeFilter(tag) {
     setFilters(prev => prev.filter(f => f !== tag))
   }
 
-  // Clear all filters
   function clearFilters() {
     setFilters([])
   }
@@ -28,36 +31,33 @@ export default function JobsListPage() {
   // Loading state
   if (loading) {
     return (
-      <main>
+      <div style={{ color: 'white' }}>
         <p>Loading jobs...</p>
-      </main>
+      </div>
     )
   }
 
   // Error state
   if (error) {
     return (
-      <main>
+      <div style={{ color: 'white' }}>
         <p role="alert">Error loading jobs: {error}</p>
-      </main>
+      </div>
     )
   }
 
   // Empty state
-  if (jobs.length === 0) {
+  if (!jobs || jobs.length === 0) {
     return (
-      <main>
+      <div style={{ color: 'white' }}>
         <p>No job listings available.</p>
-      </main>
+      </div>
     )
   }
 
-
-
-  // Render list MAIN RENDER
-  
+  // Main render
   return (
-    <main>
+    <div style={{ color: 'white' }}>
       {filters.length > 0 && (
         <div>
           {filters.map(tag => (
@@ -70,13 +70,14 @@ export default function JobsListPage() {
       )}
 
       <ul>
-        {jobs.map(job => {
+        {visibleJobs.map(job => {
           const tags = [
             job.role,
             job.level,
             ...(job.languages ?? []),
             ...(job.tools ?? []),
           ]
+
           return (
             <li key={job.id}>
               <h3>{job.position}</h3>
@@ -102,6 +103,6 @@ export default function JobsListPage() {
           )
         })}
       </ul>
-    </main>
+    </div>
   )
 }
