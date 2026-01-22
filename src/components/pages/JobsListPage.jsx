@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { useState } from 'react'
 import { useJobs } from '../../hooks/useJobs'
 import { filterJobs } from '../../lib/utils'
@@ -80,7 +81,11 @@ export default function JobsListPage() {
 
           return (
             <li key={job.id}>
-              <h3>{job.position}</h3>
+              <h3>
+                <Link to={`/jobs/${job.id}`}>
+                  {job.position}
+                </Link>
+              </h3>
               <p>{job.company}</p>
               <p>
                 {job.role} • {job.level}

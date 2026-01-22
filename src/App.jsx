@@ -1,12 +1,17 @@
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import JobsListPage from './components/pages/JobsListPage.jsx';
+import JobDetailsPage from './components/pages/JobDetailsPage.jsx'
 
 function App() {
   return (
-    <div style={{ color: 'white', padding: '2rem' }}>
-      <h1>App is rendering</h1>
-      <JobsListPage />
-    </div>
-  );
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<JobsListPage />} />
+        <Route path="/jobs/:id" element={<JobDetailsPage />} />
+        <Route path="*" element={<p>Page not found</p>} />
+      </Routes>
+    </BrowserRouter>
+  )
 }
 
-export default App;
+export default App
