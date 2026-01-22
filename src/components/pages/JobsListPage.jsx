@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { useJobs } from '../../hooks/useJobs'
 import { filterJobs } from '../../lib/utils'
 import JobCard from '../ui/JobCard.jsx'
+import FilterBar from '../ui/FilterBar'
+
 
 
 export default function JobsListPage() {
@@ -48,16 +50,12 @@ export default function JobsListPage() {
   // Main render
   return (
     <div>
-      {filters.length > 0 && (
-        <div>
-          {filters.map(tag => (
-            <button key={tag} onClick={() => removeFilter(tag)}>
-              {tag} ×
-            </button>
-          ))}
-          <button onClick={clearFilters}>Clear</button>
-        </div>
-      )}
+      {/* Filter bar for active filters */}
+      <FilterBar
+        filters={filters}
+        onRemove={removeFilter}
+        onClear={clearFilters}
+      />
 
       <ul>
         {visibleJobs.map(job => (

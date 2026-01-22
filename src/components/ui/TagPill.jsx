@@ -1,13 +1,21 @@
+// Import styled-components to create styled React components
 import styled from 'styled-components';
 
 /**
- * Reusable tag button used for job tags and active filters.
+ * TagPill
+ * -------
+ * Reusable tag button used for:
+ * - job tags on JobCard components
+ * - active filter tags that can be removed
  *
- * @param {Object} props
- * @param {string} props.label - Text displayed inside the tag
- * @param {() => void} props.onClick - Called when the tag is clicked
- * @param {boolean} [props.removable=false] - Whether the tag can be removed
+ * Props:
+ * @param {string} label - Text displayed inside the tag
+ * @param {function} onClick - Function called when the tag is clicked
+ * @param {boolean} removable - Whether the tag shows a remove (×) icon
  */
+
+// Styled button for the tag pill
+// Uses theme values for consistent colors, spacing, and border radius
 const Pill = styled.button`
   display: inline-flex;
   align-items: center;
@@ -24,31 +32,36 @@ const Pill = styled.button`
 
   cursor: pointer;
 
+  // Hover state improves accessibility and user feedback
   &:hover {
     background-color: ${({ theme }) => theme.colors.primary};
     color: ${({ theme }) => theme.colors.white};
   }
 
+  // If the tag is removable, adjust padding to fit the remove icon
   ${({ removable }) =>
-        removable &&
-        `
+    removable &&
+    `
       padding-right: 0.5rem;
     `}
 `;
 
+// Styled remove icon shown when the tag is removable
 const RemoveIcon = styled.span`
   font-size: 1rem;
   line-height: 1;
 `;
+
+// TagPill component
 export default function TagPill({ label, onClick, removable = false }) {
-    return (
-        <button
-            type="button"
-            onClick={onClick}
-            className={`tag-pill ${removable ? 'removable' : ''}`}
-        >
-            {label}
-            {removable && <span className="remove">×</span>}
-        </button>
-    );
+  return (
+    <Pill
+      type="button"
+      onClick={() => onClick(label)}
+      removable={removable}
+    >
+      {label}
+      {removable && <RemoveIcon>×</RemoveIcon>}
+    </Pill>
+  );
 }
