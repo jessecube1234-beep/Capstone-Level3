@@ -25,9 +25,11 @@ export function useJobs() {
     setLoading(false);
   }, []);
 
-  useEffect(() => {
-    loadJobs();
-  }, [loadJobs]);
+/* eslint-disable react-hooks/set-state-in-effect */
+useEffect(() => {
+  loadJobs()
+}, [loadJobs])
+/* eslint-enable react-hooks/set-state-in-effect */
 
   return {
     jobs,

@@ -1,16 +1,77 @@
-# React + Vite
+# Job Listings with Filtering
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React job listings application built as a capstone project.  
+Users can browse jobs, filter them by tags, and view job details.
 
-Currently, two official plugins are available:
+Based on the Frontend Mentor “Job Listings with Filtering” challenge.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- View job listings
+- Filter jobs by role, level, languages, and tools
+- AND-based filtering (jobs must match all selected filters)
+- Remove individual filters or clear all filters
+- Dynamic job detail routes
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Tech Stack
+
+- React (Vite)
+- Styled-components
+- Supabase
+- Vitest + React Testing Library
+- Netlify
+
+---
+
+## Routes
+
+- `/` — Job listings with filters  
+- `/jobs/:id` — Job detail page
+
+---
+
+## Architecture Overview
+
+- `useJobs` — fetches jobs from Supabase and manages loading/error state
+- `filterJobs` — pure utility function that applies AND-based filtering logic
+- `FilterBar`, `JobCard`, `TagPill` — presentational UI components
+- `Header` — layout component (snapshot tested)
+
+Filtering logic is separated from UI to allow unit testing.
+
+---
+
+## Testing
+
+Testing is implemented using **Vitest**.
+
+### Tests included
+- **Unit test** for `filterJobs`
+  - AND logic
+  - edge cases (no filters, unknown tags, duplicates)
+- **Component test** for `FilterBar`
+  - verifies filters render
+  - verifies Clear button triggers callback
+- **Snapshot test** for `Header`
+
+### Run tests
+```bash
+npm run test
+```
+### Run tests with coverage
+```bash
+npm run test -- --coverage
+```
+## Running Locally
+
+```bash
+npm install
+npm run dev
+```
+## Deployment
+
+The application is deployed on Netlify.
