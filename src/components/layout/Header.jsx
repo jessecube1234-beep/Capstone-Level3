@@ -41,7 +41,6 @@ export default function Header() {
   return (
     <HeaderWrapper>
       <HeaderContent>
-        <Title>Job Listings</Title>
       </HeaderContent>
     </HeaderWrapper>
   );

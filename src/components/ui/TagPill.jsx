@@ -16,6 +16,7 @@ import styled from 'styled-components';
 
 // Styled button for the tag pill
 // Uses theme values for consistent colors, spacing, and border radius
+// NOTE: `$removable` is a transient prop so it does not reach the DOM
 const Pill = styled.button`
   display: inline-flex;
   align-items: center;
@@ -39,8 +40,8 @@ const Pill = styled.button`
   }
 
   // If the tag is removable, adjust padding to fit the remove icon
-  ${({ removable }) =>
-    removable &&
+  ${({ $removable }) =>
+    $removable &&
     `
       padding-right: 0.5rem;
     `}
@@ -58,10 +59,10 @@ export default function TagPill({ label, onClick, removable = false }) {
     <Pill
       type="button"
       onClick={() => onClick(label)}
-      removable={removable}
+      $removable={removable}
     >
       {label}
-      {removable && <RemoveIcon>×</RemoveIcon>}
+      {removable && <RemoveIcon aria-hidden="true">×</RemoveIcon>}
     </Pill>
   );
 }

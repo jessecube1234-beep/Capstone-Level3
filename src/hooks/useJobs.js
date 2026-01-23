@@ -1,38 +1,38 @@
-import { useEffect, useState, useCallback } from 'react'
-import { supabase } from '../lib/supabaseClient'
+import { useEffect, useState, useCallback } from 'react';
+import { supabase } from '../lib/supabaseClient';
 
 export function useJobs() {
-  const [jobs, setJobs] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const [jobs, setJobs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const loadJobs = useCallback(async () => {
-    setLoading(true)
-    setError(null)
+    setLoading(true);
+    setError(null);
 
     const { data, error } = await supabase
       .from('jobs')
       .select('*')
-      .order('created_at', { ascending: false })
+      .order('created_at', { ascending: false });
 
     if (error) {
-      setError(error.message)
-      setJobs([])
+      setError(error.message);
+      setJobs([]);
     } else {
-      setJobs(data)
+      setJobs(data);
     }
 
-    setLoading(false)
-  }, [])
+    setLoading(false);
+  }, []);
 
   useEffect(() => {
-    loadJobs()
-  }, [loadJobs])
+    loadJobs();
+  }, [loadJobs]);
 
   return {
     jobs,
     loading,
     error,
     reload: loadJobs
-  }
+  };
 }
