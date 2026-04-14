@@ -61,6 +61,18 @@ const logoMap = {
   'The Air Filter Company': airFilter,
 }
 
+function normalizeCompanyName(name = '') {
+  return name
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]/g, '')
+}
+
+const normalizedLogoMap = Object.entries(logoMap).reduce((acc, [company, logo]) => {
+  acc[normalizeCompanyName(company)] = logo
+  return acc
+}, {})
+
 export default function JobCard({ job, onTagClick }) {
   const tags = [
     job.role,
@@ -68,11 +80,12 @@ export default function JobCard({ job, onTagClick }) {
     ...(job.languages || []),
     ...(job.tools || []),
   ]
+  const logoSrc = normalizedLogoMap[normalizeCompanyName(job.company)]
 
   return (
     <Card $featured={job.featured}>
       {/* Company logo */}
-      <Logo src={logoMap[job.company]} alt={`${job.company} logo`} />
+      <Logo src={logoSrc} alt={`${job.company} logo`} />
 
       {/* Job info (clickable) */}
       <Info>

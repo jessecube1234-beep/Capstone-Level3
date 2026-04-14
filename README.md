@@ -75,4 +75,4 @@ npm run dev
 ## Deployment
 
 The application is deployed on Netlify.
-Link: https://wonderful-bunny-969f7e.netlify.app/
+Link: https://job-board-application-capstone.netlify.app/
