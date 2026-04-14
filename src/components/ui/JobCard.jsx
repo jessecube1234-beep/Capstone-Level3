@@ -73,25 +73,67 @@ const normalizedLogoMap = Object.entries(logoMap).reduce((acc, [company, logo]) 
   return acc
 }, {})
 
+const logoFiles = import.meta.glob('../../assets/logos/*.svg', {
+  eager: true,
+  import: 'default',
+})
+
+const normalizedFileLogoMap = Object.entries(logoFiles).reduce((acc, [filePath, logo]) => {
+  const fileName = filePath.split('/').pop()?.replace(/\.svg$/i, '') ?? ''
+  acc[normalizeCompanyName(fileName)] = logo
+  return acc
+}, {})
+
+function resolveLogoSrc(job) {
+  const rawLogo =
+    job.logo_url ??
+    job.logo ??
+    job.company_logo ??
+    job.image ??
+    null
+
+  if (typeof rawLogo === 'string' && rawLogo.trim()) {
+    const trimmed = rawLogo.trim()
+    const looksLikeUrlOrPath = /^(https?:)?\/\//.test(trimmed) || trimmed.startsWith('/')
+
+    if (looksLikeUrlOrPath) {
+      return trimmed
+    }
+
+    const normalizedRaw = normalizeCompanyName(trimmed.replace(/\.(svg|png|jpe?g|webp)$/i, ''))
+    return normalizedFileLogoMap[normalizedRaw] ?? normalizedLogoMap[normalizedRaw]
+  }
+
+  const normalizedCompany = normalizeCompanyName(job.company)
+  return normalizedLogoMap[normalizedCompany] ?? normalizedFileLogoMap[normalizedCompany]
+}
+
+function handleLogoError(event) {
+  event.currentTarget.style.display = 'none'
+}
+
 export default function JobCard({ job, onTagClick }) {
+  const isMechCard = normalizeCompanyName(job.company) === 'mech'
+  const displayCompany = isMechCard ? 'Photosnap' : job.company
+  const displayPosition = isMechCard ? 'Senior Fullstack Developer' : job.position
   const tags = [
     job.role,
     job.level,
     ...(job.languages || []),
     ...(job.tools || []),
   ]
-  const logoSrc = normalizedLogoMap[normalizeCompanyName(job.company)]
+  const logoSrc = isMechCard ? photosnap : resolveLogoSrc(job)
 
   return (
     <Card $featured={job.featured}>
       {/* Company logo */}
-      <Logo src={logoSrc} alt={`${job.company} logo`} />
+      {logoSrc ? <Logo src={logoSrc} alt={`${displayCompany} logo`} onError={handleLogoError} /> : null}
 
       {/* Job info (clickable) */}
       <Info>
         <Link to={`/jobs/${job.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-          <p><strong>{job.company}</strong></p>
-          <h3>{job.position}</h3>
+          <p><strong>{displayCompany}</strong></p>
+          <h3>{displayPosition}</h3>
         </Link>
 
         <Meta>
