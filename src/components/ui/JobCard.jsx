@@ -26,6 +26,11 @@ const Card = styled.li`
   gap: ${({ theme }) => theme.spacing.lg};
 
   box-shadow: 0 15px 25px rgba(0, 0, 0, 0.08);
+
+  @media (max-width: 768px) {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
 `
 
 const Logo = styled.img`
@@ -35,6 +40,7 @@ const Logo = styled.img`
 
 const Info = styled.div`
   flex: 1;
+  min-width: 0;
 `
 
 const Meta = styled.p`
@@ -46,6 +52,10 @@ const Tags = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: ${({ theme }) => theme.spacing.sm};
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 `
 
 const logoMap = {
@@ -94,14 +104,18 @@ function resolveLogoSrc(job) {
 
   if (typeof rawLogo === 'string' && rawLogo.trim()) {
     const trimmed = rawLogo.trim()
-    const looksLikeUrlOrPath = /^(https?:)?\/\//.test(trimmed) || trimmed.startsWith('/')
+    const fileStem = trimmed.split('/').pop()?.replace(/\.(svg|png|jpe?g|webp)$/i, '') ?? ''
+    const normalizedRaw = normalizeCompanyName(fileStem || trimmed)
+    const matchedLocalLogo = normalizedFileLogoMap[normalizedRaw] ?? normalizedLogoMap[normalizedRaw]
 
+    if (matchedLocalLogo) {
+      return matchedLocalLogo
+    }
+
+    const looksLikeUrlOrPath = /^(https?:)?\/\//.test(trimmed) || trimmed.startsWith('/')
     if (looksLikeUrlOrPath) {
       return trimmed
     }
-
-    const normalizedRaw = normalizeCompanyName(trimmed.replace(/\.(svg|png|jpe?g|webp)$/i, ''))
-    return normalizedFileLogoMap[normalizedRaw] ?? normalizedLogoMap[normalizedRaw]
   }
 
   const normalizedCompany = normalizeCompanyName(job.company)
